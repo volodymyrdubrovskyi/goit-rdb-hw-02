@@ -45,41 +45,30 @@ ENGINE = InnoDB;
 USE `mydb_2nf` ;
 
 -- -----------------------------------------------------
--- Table `mydb_2nf`.`Request_Dates`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb_2nf`.`Request_Dates` (
-  `Request_id` INT NOT NULL,
-  `Request_Date` DATE NOT NULL,
-  PRIMARY KEY (`Request_id`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `mydb_2nf`.`Clients`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb_2nf`.`Clients` (
-  `Request_id` INT NOT NULL,
+  `id` INT NOT NULL,
   `Client` VARCHAR(45) NOT NULL,
   `Client_Adress` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Request_id`),
-  CONSTRAINT `Clients_Request_Dates`
-    FOREIGN KEY (`Request_id`)
-    REFERENCES `mydb_2nf`.`Request_Dates` (`Request_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb_2nf`.`Items`
+-- Table `mydb_2nf`.`Requests`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb_2nf`.`Items` (
-  `Request_id` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `mydb_2nf`.`Requests` (
+  `id` VARCHAR(45) NOT NULL,
   `Item_Name` VARCHAR(45) NOT NULL,
   `Item_Num` INT NOT NULL,
-  CONSTRAINT `Items_Clients`
-    FOREIGN KEY (`Request_id`)
-    REFERENCES `mydb_2nf`.`Clients` (`Request_id`)
+  `date` DATE NOT NULL,
+  `Client_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `Client_idx` (`Client_id` ASC) VISIBLE,
+  CONSTRAINT `Client`
+    FOREIGN KEY (`Client_id`)
+    REFERENCES `mydb_2nf`.`Clients` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -87,41 +76,28 @@ ENGINE = InnoDB;
 USE `mydb_3nf` ;
 
 -- -----------------------------------------------------
--- Table `mydb_3nf`.`Adressess`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb_3nf`.`Adressess` (
-  `Client` VARCHAR(45) NOT NULL,
-  `Address` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Client`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb_3nf`.`Request_Dates`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb_3nf`.`Request_Dates` (
-  `Request_id` INT NOT NULL,
-  `Request_Date` DATE NOT NULL,
-  PRIMARY KEY (`Request_id`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `mydb_3nf`.`Clients`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb_3nf`.`Clients` (
-  `Request_id` INT NOT NULL,
+  `id` INT NOT NULL,
   `Client` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Request_id`),
-  INDEX `fk_Clients_Adressess_idx` (`Client` ASC) VISIBLE,
-  CONSTRAINT `fk_Clients_Adressess`
-    FOREIGN KEY (`Client`)
-    REFERENCES `mydb_3nf`.`Adressess` (`Client`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Clients_Request_Dates1`
-    FOREIGN KEY (`Request_id`)
-    REFERENCES `mydb_3nf`.`Request_Dates` (`Request_id`)
+  `Adress` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb_3nf`.`Requests`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb_3nf`.`Requests` (
+  `id` INT NOT NULL,
+  `Date` DATE NOT NULL,
+  `Client_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `Client_idx` (`Client_id` ASC) VISIBLE,
+  CONSTRAINT `Client`
+    FOREIGN KEY (`Client_id`)
+    REFERENCES `mydb_3nf`.`Clients` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -134,10 +110,10 @@ CREATE TABLE IF NOT EXISTS `mydb_3nf`.`Items` (
   `Request_id` INT NOT NULL,
   `Item_Name` VARCHAR(45) NOT NULL,
   `Item_Num` INT NOT NULL,
-  INDEX `fk_Items_Clients1_idx` (`Request_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Items_Clients1`
+  PRIMARY KEY (`Request_id`),
+  CONSTRAINT `Items`
     FOREIGN KEY (`Request_id`)
-    REFERENCES `mydb_3nf`.`Clients` (`Request_id`)
+    REFERENCES `mydb_3nf`.`Requests` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
