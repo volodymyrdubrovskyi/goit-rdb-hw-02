@@ -110,7 +110,6 @@ CREATE TABLE IF NOT EXISTS `mydb_3nf`.`Items` (
   `Request_id` INT NOT NULL,
   `Item_Name` VARCHAR(45) NOT NULL,
   `Item_Num` INT NOT NULL,
-  PRIMARY KEY (`Request_id`),
   CONSTRAINT `Items`
     FOREIGN KEY (`Request_id`)
     REFERENCES `mydb_3nf`.`Requests` (`id`)
